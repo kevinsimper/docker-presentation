@@ -245,11 +245,38 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 # deis.io
 ## your own paas
 --
+## mimicking heroku functionality and cli
+
+## $ deis apps:create
+## $ deis apps:list
+## $ git push deis master
+--
+```
+$ git push deis master
+Counting objects: 13, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (13/13), 1.99 KiB | 0 bytes/s, done.
+Total 13 (delta 2), reused 0 (delta 0)
+======> Building Docker image
+
+```
+--
+## Setting up deis
+## 45 minutes
+--
 ## $ brew install deisctl
 --
-## coreos
+## deis + coreos
 * has cloudinit/userdata for all providers
 
+```
+$ git clone https://github.com/deis/deis.git && cd deis
+
+$ make discovery-url
+
+```
+--
 ```
 $ gem install docl
 $ docl authorize
@@ -267,30 +294,237 @@ Singapore 1 (sgp1)
 $ ./contrib/digitalocean/provision-do-cluster.sh ams2 690051 4GB
 ```
 --
-## $ deisctl install platform
+```
+$ export DEISCTL_TUNNEL=178.62.236.61
+$ deisctl config platform set sshPrivateKey=~/.ssh/deis
+```
+--
+```
+$ deisctl install platform
+● ▴ ■
+■ ● ▴ Installing Deis...
+▴ ■ ●
+
+Storage subsystem...
+deis-store-daemon.service: loaded
+deis-store-monitor.service: loaded
+deis-store-gateway.service: loaded
+deis-store-volume.service: loaded
+deis-store-metadata.service: loaded
+Logging subsystem...
+deis-logspout.service: loaded
+deis-logger.service: loaded
+Control plane...
+deis-database.service: loaded
+deis-controller.service: loaded
+deis-cache.service: loaded
+deis-registry@1.service: loaded
+deis-builder.service: loaded
+Data plane...
+deis-publisher.service: loaded
+Routing mesh...
+deis-router@1.service: loaded
+deis-router@3.service: loaded
+deis-router@2.service: loaded
+Done.
+
+Please run `deisctl start platform` to boot up Deis.
+```
+--
+
+```
+deisctl start platform
+● ▴ ■
+■ ● ▴ Starting Deis...
+▴ ■ ●
+
+Storage subsystem...
+deis-store-monitor.service: activating/start-pre
+deis-store-monitor.service: active/running
+deis-store-daemon.service: activating/start-pre
+deis-store-daemon.service: active/running
+deis-store-metadata.service: activating/start-pre
+deis-store-metadata.service: active/running
+deis-store-gateway.service: activating/start-pre
+deis-store-gateway.service: activating/start-post
+deis-store-gateway.service: active/running
+deis-store-volume.service: active/running
+Logging subsystem...
+deis-logger.service: activating/start-pre
+deis-logger.service: active/running
+deis-logspout.service: activating/start-pre
+deis-logspout.service: active/running
+Control plane...
+deis-database.service: activating/start-pre
+deis-registry@1.service: activating/start-pre
+deis-controller.service: activating/start-pre
+deis-cache.service: activating/start-pre
+deis-cache.service: active/running
+deis-database.service: active/running
+deis-registry@1.service: active/running
+deis-controller.service: active/running
+deis-builder.service: activating/start-post
+deis-builder.service: active/running
+Data plane...
+deis-publisher.service: active/running
+Routing mesh...
+deis-router@1.service: active/running
+deis-router@2.service: active/running
+deis-router@3.service: active/running
+Done.
+
+Please use `deis register` to setup an administrator account.
+```
+--
+```
+deisctl list
+UNIT        MACHINE       LOAD  ACTIVE  SUB
+deis-builder.service    50e09e48.../10.133.218.102  loaded  active  running
+deis-cache.service    dd805855.../10.133.194.30 loaded  active  running
+deis-controller.service   50e09e48.../10.133.218.102  loaded  active  running
+deis-database.service   5a290776.../10.133.218.103  loaded  active  running
+deis-logger.service   5a290776.../10.133.218.103  loaded  active  running
+deis-logspout.service   50e09e48.../10.133.218.102  loaded  active  running
+deis-logspout.service   5a290776.../10.133.218.103  loaded  active  running
+deis-logspout.service   dd805855.../10.133.194.30 loaded  active  running
+deis-publisher.service    50e09e48.../10.133.218.102  loaded  active  running
+deis-publisher.service    5a290776.../10.133.218.103  loaded  active  running
+deis-publisher.service    dd805855.../10.133.194.30 loaded  active  running
+deis-registry@1.service   dd805855.../10.133.194.30 loaded  active  running
+deis-router@1.service   5a290776.../10.133.218.103  loaded  active  running
+deis-router@2.service   dd805855.../10.133.194.30 loaded  active  running
+deis-router@3.service   50e09e48.../10.133.218.102  loaded  active  running
+deis-store-daemon.service 50e09e48.../10.133.218.102  loaded  active  running
+deis-store-daemon.service 5a290776.../10.133.218.103  loaded  active  running
+deis-store-daemon.service dd805855.../10.133.194.30 loaded  active  running
+deis-store-gateway.service  50e09e48.../10.133.218.102  loaded  active  running
+deis-store-metadata.service 50e09e48.../10.133.218.102  loaded  active  running
+deis-store-metadata.service 5a290776.../10.133.218.103  loaded  active  running
+deis-store-metadata.service dd805855.../10.133.194.30 loaded  active  running
+deis-store-monitor.service  50e09e48.../10.133.218.102  loaded  active  running
+deis-store-monitor.service  5a290776.../10.133.218.103  loaded  active  running
+deis-store-monitor.service  dd805855.../10.133.194.30 loaded  active  running
+deis-store-volume.service 50e09e48.../10.133.218.102  loaded  active  running
+deis-store-volume.service 5a290776.../10.133.218.103  loaded  active  running
+deis-store-volume.service dd805855.../10.133.194.30 loaded  active  running
+```
 --
 ## install _deis_ terminal
 ## curl -sSL http://deis.io/deis-cli/install.sh | sh
 --
-## deis register http://my-coreos-cluster.com
+```
+$ deis register deis.app.dockercph.dk
+username: kevinsimper
+password:
+password (confirm):
+email: kevin.simper@gmail.com
+Registered kevinsimper
+Logged in as kevinsimper
+``
 --
-## mimicking heroku functionality and cli
+```
+git clone https://github.com/kevinsimper/node-server-docker-example
+```
+--
+```
+$ ls -lF
+total 24
+-rw-rw-r--  1 kevinsimper  staff   84 Feb 17 14:23 Dockerfile
+-rw-r--r--  1 kevinsimper  staff   76 Feb 17 14:02 README.md
+-rw-rw-r--  1 kevinsimper  staff  163 Feb 17 14:05 app.js
+```
+--
+```
+$ deis apps:create
+$ deis keys:add
+$ git push deis master
+```
+--
 
-## $ deis apps:create
-## $ deis apps:list
-## $ git push deis master
---
 ```
 $ git push deis master
-Counting objects: 13, done.
+Counting objects: 8, done.
 Delta compression using up to 8 threads.
-Compressing objects: 100% (13/13), done.
-Writing objects: 100% (13/13), 1.99 KiB | 0 bytes/s, done.
-Total 13 (delta 2), reused 0 (delta 0)
------> Building Docker image
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (8/8), 1.19 KiB | 0 bytes/s, done.
+Total 8 (delta 0), reused 0 (delta 0)
 
+=====> Building Docker image
+remote: build context to Docker daemon 6.144 kB
+remote: build context to Docker daemon
+Step 0 : FROM node:latest
+Pulling repository node
+Status: Downloaded newer image for node:latest
+ ===> 12f018678fb1
+Step 1 : ADD app.js /app/app.js
+ ===> 73947ffaab84
+Removing intermediate container 199b42aafdec
+Step 2 : WORKDIR /app
+ ===> Running in 0856bf865d39
+ ===> 16b0227a3700
+Removing intermediate container 0856bf865d39
+Step 3 : CMD node app.js
+ ===> Running in 9438a29dbec1
+ ===> de04e58ea47a
+Removing intermediate container 9438a29dbec1
+Step 4 : EXPOSE 9000
+ ===> Running in 63eb75487fbf
+ ===> ad732a778bf7
+Removing intermediate container 63eb75487fbf
+Step 5 : ENV GIT_SHA 67b5156b3e8148ad1f049afb9018a74276cd75fe
+ ===> Running in 1779a2dafa30
+ ===> 17921dd650e9
+Removing intermediate container 1779a2dafa30
+Successfully built 17921dd650e9
+=====> Pushing image to private registry
+
+=====> Launching...
+       done, padded-fireball:v2 deployed to Deis
+
+       http://padded-fireball.app.dockercph.com
+
+       To learn more, use `deis help` or visit http://deis.io
+
+To ssh://git@deis.app.dockercph.dk:2222/padded-fireball.git
+ * [new branch]      master -> master
 ```
 --
+![dockercph](deis.png)
+--
 ```
-asd
+$ mkdir ~/mynginx && cd ~/mynginx
+$ deis create
+$ deis pull kevinsimper/node-server-example:latest
+Creating build... done, v1
 ```
+http://mynginx.app.dockercph.dk/
+--
+## scale
+
+```
+deis scale cmd=4
+Scaling processes... but first, coffee!
+done in 94s
+=== mynginx Processes
+
+=== cmd:
+cmd.1 up (v4)
+cmd.2 up (v4)
+cmd.3 up (v4)
+cmd.4 up (v4)
+```
+
+--
+# summary
+## young community
+## do it yourself
+## lots of possibilties
+## no solution for all
+
+--
+<h1 style="margin:20px 0;">try it yourself!</h1>
+
+## download the `deis` cli
+## register against `deis.app.dockercph.dk`
+
+<h2 style="margin-top:80px;">questions?</h1>

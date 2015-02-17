@@ -712,15 +712,43 @@ CONTAINER ID        IMAGE               COMMAND             CREATED             
 </section>
   </div>
   <div class="slide hidden" id="slide-43">
-    <section class="slide-content"><h2 id="-brew-install-deisctl">$ brew install deisctl</h2>
+    <section class="slide-content"><h2 id="mimicking-heroku-functionality-and-cli">mimicking heroku functionality and cli</h2>
+<h2 id="-deis-apps-create">$ deis apps:create</h2>
+<h2 id="-deis-apps-list">$ deis apps:list</h2>
+<h2 id="-git-push-deis-master">$ git push deis master</h2>
 </section>
   </div>
   <div class="slide hidden" id="slide-44">
-    <section class="slide-content"><h2 id="coreos">coreos</h2>
+    <section class="slide-content"><pre><code>$ git push deis master
+Counting objects: 13, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (13/13), 1.99 KiB | 0 bytes/s, done.
+Total 13 (delta 2), reused 0 (delta 0)
+======&gt; Building Docker image</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-45">
+    <section class="slide-content"><h2 id="setting-up-deis">Setting up deis</h2>
+<h2 id="45-minutes">45 minutes</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-46">
+    <section class="slide-content"><h2 id="-brew-install-deisctl">$ brew install deisctl</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-47">
+    <section class="slide-content"><h2 id="deis-coreos">deis + coreos</h2>
 <ul>
 <li>has cloudinit/userdata for all providers</li>
 </ul>
-<pre><code>$ gem install docl
+<pre><code>$ git clone https://github.com/deis/deis.git &amp;&amp; cd deis
+
+$ make discovery-url</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-48">
+    <section class="slide-content"><pre><code>$ gem install docl
 $ docl authorize
 $ docl upload_key deis ~/.ssh/deis.pub
 $ # retrieve your SSH key&#39;s ID
@@ -736,42 +764,242 @@ Singapore 1 (sgp1)
 $ ./contrib/digitalocean/provision-do-cluster.sh ams2 690051 4GB</code></pre>
 </section>
   </div>
-  <div class="slide hidden" id="slide-45">
-    <section class="slide-content"><h2 id="-deisctl-install-platform">$ deisctl install platform</h2>
+  <div class="slide hidden" id="slide-49">
+    <section class="slide-content"><pre><code>$ export DEISCTL_TUNNEL=178.62.236.61
+$ deisctl config platform set sshPrivateKey=~/.ssh/deis</code></pre>
 </section>
   </div>
-  <div class="slide hidden" id="slide-46">
+  <div class="slide hidden" id="slide-50">
+    <section class="slide-content"><pre><code>$ deisctl install platform
+● ▴ ■
+■ ● ▴ Installing Deis...
+▴ ■ ●
+
+Storage subsystem...
+deis-store-daemon.service: loaded
+deis-store-monitor.service: loaded
+deis-store-gateway.service: loaded
+deis-store-volume.service: loaded
+deis-store-metadata.service: loaded
+Logging subsystem...
+deis-logspout.service: loaded
+deis-logger.service: loaded
+Control plane...
+deis-database.service: loaded
+deis-controller.service: loaded
+deis-cache.service: loaded
+deis-registry@1.service: loaded
+deis-builder.service: loaded
+Data plane...
+deis-publisher.service: loaded
+Routing mesh...
+deis-router@1.service: loaded
+deis-router@3.service: loaded
+deis-router@2.service: loaded
+Done.
+
+Please run `deisctl start platform` to boot up Deis.</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-51">
+    <section class="slide-content"><pre><code>deisctl start platform
+● ▴ ■
+■ ● ▴ Starting Deis...
+▴ ■ ●
+
+Storage subsystem...
+deis-store-monitor.service: activating/start-pre
+deis-store-monitor.service: active/running
+deis-store-daemon.service: activating/start-pre
+deis-store-daemon.service: active/running
+deis-store-metadata.service: activating/start-pre
+deis-store-metadata.service: active/running
+deis-store-gateway.service: activating/start-pre
+deis-store-gateway.service: activating/start-post
+deis-store-gateway.service: active/running
+deis-store-volume.service: active/running
+Logging subsystem...
+deis-logger.service: activating/start-pre
+deis-logger.service: active/running
+deis-logspout.service: activating/start-pre
+deis-logspout.service: active/running
+Control plane...
+deis-database.service: activating/start-pre
+deis-registry@1.service: activating/start-pre
+deis-controller.service: activating/start-pre
+deis-cache.service: activating/start-pre
+deis-cache.service: active/running
+deis-database.service: active/running
+deis-registry@1.service: active/running
+deis-controller.service: active/running
+deis-builder.service: activating/start-post
+deis-builder.service: active/running
+Data plane...
+deis-publisher.service: active/running
+Routing mesh...
+deis-router@1.service: active/running
+deis-router@2.service: active/running
+deis-router@3.service: active/running
+Done.
+
+Please use `deis register` to setup an administrator account.</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-52">
+    <section class="slide-content"><pre><code>deisctl list
+UNIT        MACHINE       LOAD  ACTIVE  SUB
+deis-builder.service    50e09e48.../10.133.218.102  loaded  active  running
+deis-cache.service    dd805855.../10.133.194.30 loaded  active  running
+deis-controller.service   50e09e48.../10.133.218.102  loaded  active  running
+deis-database.service   5a290776.../10.133.218.103  loaded  active  running
+deis-logger.service   5a290776.../10.133.218.103  loaded  active  running
+deis-logspout.service   50e09e48.../10.133.218.102  loaded  active  running
+deis-logspout.service   5a290776.../10.133.218.103  loaded  active  running
+deis-logspout.service   dd805855.../10.133.194.30 loaded  active  running
+deis-publisher.service    50e09e48.../10.133.218.102  loaded  active  running
+deis-publisher.service    5a290776.../10.133.218.103  loaded  active  running
+deis-publisher.service    dd805855.../10.133.194.30 loaded  active  running
+deis-registry@1.service   dd805855.../10.133.194.30 loaded  active  running
+deis-router@1.service   5a290776.../10.133.218.103  loaded  active  running
+deis-router@2.service   dd805855.../10.133.194.30 loaded  active  running
+deis-router@3.service   50e09e48.../10.133.218.102  loaded  active  running
+deis-store-daemon.service 50e09e48.../10.133.218.102  loaded  active  running
+deis-store-daemon.service 5a290776.../10.133.218.103  loaded  active  running
+deis-store-daemon.service dd805855.../10.133.194.30 loaded  active  running
+deis-store-gateway.service  50e09e48.../10.133.218.102  loaded  active  running
+deis-store-metadata.service 50e09e48.../10.133.218.102  loaded  active  running
+deis-store-metadata.service 5a290776.../10.133.218.103  loaded  active  running
+deis-store-metadata.service dd805855.../10.133.194.30 loaded  active  running
+deis-store-monitor.service  50e09e48.../10.133.218.102  loaded  active  running
+deis-store-monitor.service  5a290776.../10.133.218.103  loaded  active  running
+deis-store-monitor.service  dd805855.../10.133.194.30 loaded  active  running
+deis-store-volume.service 50e09e48.../10.133.218.102  loaded  active  running
+deis-store-volume.service 5a290776.../10.133.218.103  loaded  active  running
+deis-store-volume.service dd805855.../10.133.194.30 loaded  active  running</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-53">
     <section class="slide-content"><h2 id="install-_deis_-terminal">install <em>deis</em> terminal</h2>
 <h2 id="curl-ssl-http-deis-io-deis-cli-install-sh-sh">curl -sSL <a href="http://deis.io/deis-cli/install.sh">http://deis.io/deis-cli/install.sh</a> | sh</h2>
 </section>
   </div>
-  <div class="slide hidden" id="slide-47">
-    <section class="slide-content"><h2 id="deis-register-http-my-coreos-cluster-com">deis register <a href="http://my-coreos-cluster.com">http://my-coreos-cluster.com</a></h2>
+  <div class="slide hidden" id="slide-54">
+    <section class="slide-content"><p><code>`
+$ deis register deis.app.dockercph.dk
+username: kevinsimper
+password:
+password (confirm):
+email: kevin.simper@gmail.com
+Registered kevinsimper
+Logged in as kevinsimper</code></p>
 </section>
   </div>
-  <div class="slide hidden" id="slide-48">
-    <section class="slide-content"><h2 id="mimicking-heroku-functionality-and-cli">mimicking heroku functionality and cli</h2>
-<h2 id="-deis-apps-create">$ deis apps:create</h2>
-<h2 id="-deis-apps-list">$ deis apps:list</h2>
-<h2 id="-git-push-deis-master">$ git push deis master</h2>
+  <div class="slide hidden" id="slide-55">
+    <section class="slide-content"><pre><code>git clone https://github.com/kevinsimper/node-server-docker-example</code></pre>
 </section>
   </div>
-  <div class="slide hidden" id="slide-49">
-    <section class="slide-content"><p>```
-$ git push deis master
-Counting objects: 13, done.
+  <div class="slide hidden" id="slide-56">
+    <section class="slide-content"><pre><code>$ ls -lF
+total 24
+-rw-rw-r--  1 kevinsimper  staff   84 Feb 17 14:23 Dockerfile
+-rw-r--r--  1 kevinsimper  staff   76 Feb 17 14:02 README.md
+-rw-rw-r--  1 kevinsimper  staff  163 Feb 17 14:05 app.js</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-57">
+    <section class="slide-content"><pre><code>$ deis apps:create
+$ deis keys:add
+$ git push deis master</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-58">
+    <section class="slide-content"><pre><code>$ git push deis master
+Counting objects: 8, done.
 Delta compression using up to 8 threads.
-Compressing objects: 100% (13/13), done.
-Writing objects: 100% (13/13), 1.99 KiB | 0 bytes/s, done.
-Total 13 (delta 2), reused 0 (delta 0)</p>
+Compressing objects: 100% (8/8), done.
+Writing objects: 100% (8/8), 1.19 KiB | 0 bytes/s, done.
+Total 8 (delta 0), reused 0 (delta 0)
+
+=====&gt; Building Docker image
+remote: build context to Docker daemon 6.144 kB
+remote: build context to Docker daemon
+Step 0 : FROM node:latest
+Pulling repository node
+Status: Downloaded newer image for node:latest
+ ===&gt; 12f018678fb1
+Step 1 : ADD app.js /app/app.js
+ ===&gt; 73947ffaab84
+Removing intermediate container 199b42aafdec
+Step 2 : WORKDIR /app
+ ===&gt; Running in 0856bf865d39
+ ===&gt; 16b0227a3700
+Removing intermediate container 0856bf865d39
+Step 3 : CMD node app.js
+ ===&gt; Running in 9438a29dbec1
+ ===&gt; de04e58ea47a
+Removing intermediate container 9438a29dbec1
+Step 4 : EXPOSE 9000
+ ===&gt; Running in 63eb75487fbf
+ ===&gt; ad732a778bf7
+Removing intermediate container 63eb75487fbf
+Step 5 : ENV GIT_SHA 67b5156b3e8148ad1f049afb9018a74276cd75fe
+ ===&gt; Running in 1779a2dafa30
+ ===&gt; 17921dd650e9
+Removing intermediate container 1779a2dafa30
+Successfully built 17921dd650e9
+=====&gt; Pushing image to private registry
+
+=====&gt; Launching...
+       done, padded-fireball:v2 deployed to Deis
+
+       http://padded-fireball.app.dockercph.com
+
+       To learn more, use `deis help` or visit http://deis.io
+
+To ssh://git@deis.app.dockercph.dk:2222/padded-fireball.git
+ * [new branch]      master -&gt; master</code></pre>
 </section>
   </div>
-  <div class="slide hidden ---&gt; Building Docker image" id="slide-50">
-    <section class="slide-content"><p>```</p>
+  <div class="slide hidden" id="slide-59">
+    <section class="slide-content"><p><img src="deis.png" alt="dockercph"></p>
 </section>
   </div>
-  <div class="slide hidden" id="slide-51">
-    <section class="slide-content"><pre><code>asd</code></pre>
+  <div class="slide hidden" id="slide-60">
+    <section class="slide-content"><pre><code>$ mkdir ~/mynginx &amp;&amp; cd ~/mynginx
+$ deis create
+$ deis pull kevinsimper/node-server-example:latest
+Creating build... done, v1</code></pre>
+<p><a href="http://mynginx.app.dockercph.dk/">http://mynginx.app.dockercph.dk/</a></p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-61">
+    <section class="slide-content"><h2 id="scale">scale</h2>
+<pre><code>deis scale cmd=4
+Scaling processes... but first, coffee!
+done in 94s
+=== mynginx Processes
+
+=== cmd:
+cmd.1 up (v4)
+cmd.2 up (v4)
+cmd.3 up (v4)
+cmd.4 up (v4)</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-62">
+    <section class="slide-content"><h1 id="summary">summary</h1>
+<h2 id="young-community">young community</h2>
+<h2 id="do-it-yourself">do it yourself</h2>
+<h2 id="lots-of-possibilties">lots of possibilties</h2>
+<h2 id="no-solution-for-all">no solution for all</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-63">
+    <section class="slide-content"><h1 style="margin:20px 0;">try it yourself!</h1>
+
+<h2 id="download-the-deis-cli">download the <code>deis</code> cli</h2>
+<h2 id="register-against-deis-app-dockercph-dk-">register against <code>deis.app.dockercph.dk</code></h2>
+<p><h2 style="margin-top:80px;">questions?</h1></p>
 </section>
   </div>
 

@@ -1,0 +1,26 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+img {
+    max-width: 100%;
+}
+
+.slide-content {
+    height: auto !important;
+    width: auto !important;
+}
+
+h2 {
+    font-size: 170%;
+}
+
+section h2:first-child {
+    margin: 170px 0 0;
+}
+
+pre {
+    font-size: 100%;
+}

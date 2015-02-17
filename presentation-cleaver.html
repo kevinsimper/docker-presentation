@@ -418,6 +418,11 @@ section h2:first-child {
 pre {
     font-size: 100%;
 }
+
+li {
+    font-size: 130%;
+}
+
   </style>
 </head>
 <body>
@@ -594,7 +599,180 @@ Pushing tag for rev [4b5657a3d162] on {https://tutum.co/v1/repositories/kevinsim
 </section>
   </div>
   <div class="slide hidden" id="slide-30">
-    <section class="slide-content"></section>
+    <section class="slide-content"><h1 id="tutum-cli">tutum cli</h1>
+<h2 id="works-but-implicit">works, but implicit</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-31">
+    <section class="slide-content"><h1 id="what-else-is-there-">What else is there?</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-32">
+    <section class="slide-content"><h1 id="docker-machine-docker-swarm">docker machine &amp; docker swarm</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-33">
+    <section class="slide-content"><h2 id="first-we-need-some-machines">First we need some machines</h2>
+<h1 id="docker-machine">Docker machine</h1>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-34">
+    <section class="slide-content"><h2 id="download-and-install">download and install</h2>
+<h2 id="docker-machine-to-your-path">docker machine to your path</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-35">
+    <section class="slide-content"><pre><code class="lang-bash">$ docker-machine create -d digitalocean --digitalocean-access-token <span class="variable">${DIGITAL_OCEAN}</span> node01
+INFO[0000] Creating SSH key...
+INFO[0001] Creating Digital Ocean droplet...
+INFO[0005] Waiting <span class="keyword">for</span> SSH...
++ <span class="test_condition">[ https://get.docker.com/ = https://get.docker.com/ ]</span>
++ sh -c apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+gpg: requesting key A88D21E9 from hkp server keyserver.ubuntu.com
+gpg: key A88D21E9: public key <span class="string">"Docker Release Tool (releasedocker) &lt;docker@dotcloud.com&gt;"</span> imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
++ sh -c <span class="keyword">echo</span> deb https://get.docker.com/ubuntu docker main &gt; /etc/apt/sources.list.d/docker.list
++ sh -c sleep 3; apt-get update; apt-get install -y -q lxc-docker
++ sh -c docker version
+INFO[0132] <span class="string">"node01"</span> has been created and is now the active machine
+INFO[0132] To connect: docker $(docker-machine config node01) ps
+kevinsimper$ docker $(docker-machine config node01) ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-36">
+    <section class="slide-content"><pre><code>$ docker-machine ls
+NAME     ACTIVE   DRIVER         STATE     URL
+node01   *        digitalocean   Running   tcp://104.131.178.98:2376</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-37">
+    <section class="slide-content"><pre><code>$ docker-machine ssh
+Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-43-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+  System information as of Tue Feb 17 03:47:41 EST 2015
+
+  System load:  0.01               Processes:              68
+  Usage of /:   11.4% of 19.56GB   Users logged in:        0
+  Memory usage: 13%                IP address for eth0:    104.131.178.98
+  Swap usage:   0%                 IP address for docker0: 172.17.42.1
+
+  Graph this data and manage this system at:
+    https://landscape.canonical.com/
+
+Last login: Tue Feb 17 03:47:41 2015 from 62-135-247-12-dynamic.dk.customer.tdc.net
+root@node01:~#</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-38">
+    <section class="slide-content"><h2 id="works-like-coreos-_etcd_">works like coreos <em>etcd</em></h2>
+<pre><code>$ docker run --rm swarm create
+Unable to find image &#39;swarm:latest&#39; locally
+a8bbe4db330c: Pull complete
+9dfb95669acc: Pull complete
+0b3950daf974: Pull complete
+633f3d9a9685: Pull complete
+bba5f98a0414: Pull complete
+defbc1ab4462: Pull complete
+92d78d321ff2: Pull complete
+511136ea3c5a: Already exists
+swarm:latest: The image you are pulling has been verified. Important: image verification is a tech preview feature and should not be relied on to provide security.
+Status: Downloaded newer image for swarm:latest
+1759275a913132d137a80afd6a929836</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-39">
+    <section class="slide-content"><pre><code>docker run -d swarm join --addr=104.131.178.98:2375 token://1759275a913132d137a80afd6a929836
+
+docker run -t -p 104.131.6.53::2375 swarm manage token://1759275a913132d137a80afd6a929836</code></pre>
+<pre><code>docker -H tcp://&lt;swarm_ip:swarm_port&gt; info</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-40">
+    <section class="slide-content"><pre><code>$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED                  STATUS              PORTS                           NODE        NAMES
+92d78d321ff2        mynginx:latest      &quot;nginx&quot;             Less than a second ago   running             104.131.178.98:49178-&gt;80/tcp    node-01     mynginx</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-41">
+    <section class="slide-content"><h2 id="rough-edges">rough edges</h2>
+<ul>
+<li>takes time</li>
+<li>docker listening on network</li>
+<li>loadbalacing</li>
+</ul>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-42">
+    <section class="slide-content"><h1 id="deis-io">deis.io</h1>
+<h2 id="your-own-paas">your own paas</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-43">
+    <section class="slide-content"><h2 id="-brew-install-deisctl">$ brew install deisctl</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-44">
+    <section class="slide-content"><h2 id="coreos">coreos</h2>
+<ul>
+<li>has cloudinit/userdata for all providers</li>
+</ul>
+<pre><code>$ gem install docl
+$ docl authorize
+$ docl upload_key deis ~/.ssh/deis.pub
+$ # retrieve your SSH key&#39;s ID
+$ docl keys
+deis (id: 690051)
+$ # retrieve the region name
+$ docl regions --metadata --private-networking
+Amsterdam 2 (ams2)
+Amsterdam 3 (ams3)
+London 1 (lon1)
+New York 3 (nyc3)
+Singapore 1 (sgp1)
+$ ./contrib/digitalocean/provision-do-cluster.sh ams2 690051 4GB</code></pre>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-45">
+    <section class="slide-content"><h2 id="-deisctl-install-platform">$ deisctl install platform</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-46">
+    <section class="slide-content"><h2 id="install-_deis_-terminal">install <em>deis</em> terminal</h2>
+<h2 id="curl-ssl-http-deis-io-deis-cli-install-sh-sh">curl -sSL <a href="http://deis.io/deis-cli/install.sh">http://deis.io/deis-cli/install.sh</a> | sh</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-47">
+    <section class="slide-content"><h2 id="deis-register-http-my-coreos-cluster-com">deis register <a href="http://my-coreos-cluster.com">http://my-coreos-cluster.com</a></h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-48">
+    <section class="slide-content"><h2 id="mimicking-heroku-functionality-and-cli">mimicking heroku functionality and cli</h2>
+<h2 id="-deis-apps-create">$ deis apps:create</h2>
+<h2 id="-deis-apps-list">$ deis apps:list</h2>
+<h2 id="-git-push-deis-master">$ git push deis master</h2>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-49">
+    <section class="slide-content"><p>```
+$ git push deis master
+Counting objects: 13, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (13/13), 1.99 KiB | 0 bytes/s, done.
+Total 13 (delta 2), reused 0 (delta 0)</p>
+</section>
+  </div>
+  <div class="slide hidden ---&gt; Building Docker image" id="slide-50">
+    <section class="slide-content"><p>```</p>
+</section>
+  </div>
+  <div class="slide hidden" id="slide-51">
+    <section class="slide-content"><pre><code>asd</code></pre>
+</section>
   </div>
 
 

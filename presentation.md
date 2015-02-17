@@ -146,3 +146,151 @@ https://github.com/tutumcloud/tutum-docker-clusterproxy
 --
 ![tutum-4](tutum-17.png)
 --
+# tutum cli
+## works, but implicit
+--
+# What else is there?
+--
+# docker machine & docker swarm
+--
+## First we need some machines
+# Docker machine
+--
+## download and install 
+## docker machine to your path
+--
+```bash
+$ docker-machine create -d digitalocean --digitalocean-access-token ${DIGITAL_OCEAN} node01
+INFO[0000] Creating SSH key...
+INFO[0001] Creating Digital Ocean droplet...
+INFO[0005] Waiting for SSH...
++ [ https://get.docker.com/ = https://get.docker.com/ ]
++ sh -c apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
+gpg: requesting key A88D21E9 from hkp server keyserver.ubuntu.com
+gpg: key A88D21E9: public key "Docker Release Tool (releasedocker) <docker@dotcloud.com>" imported
+gpg: Total number processed: 1
+gpg:               imported: 1  (RSA: 1)
++ sh -c echo deb https://get.docker.com/ubuntu docker main > /etc/apt/sources.list.d/docker.list
++ sh -c sleep 3; apt-get update; apt-get install -y -q lxc-docker
++ sh -c docker version
+INFO[0132] "node01" has been created and is now the active machine
+INFO[0132] To connect: docker $(docker-machine config node01) ps
+kevinsimper$ docker $(docker-machine config node01) ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+```
+--
+```
+$ docker-machine ls
+NAME     ACTIVE   DRIVER         STATE     URL
+node01   *        digitalocean   Running   tcp://104.131.178.98:2376
+```
+--
+```
+$ docker-machine ssh
+Welcome to Ubuntu 14.04.1 LTS (GNU/Linux 3.13.0-43-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+  System information as of Tue Feb 17 03:47:41 EST 2015
+
+  System load:  0.01               Processes:              68
+  Usage of /:   11.4% of 19.56GB   Users logged in:        0
+  Memory usage: 13%                IP address for eth0:    104.131.178.98
+  Swap usage:   0%                 IP address for docker0: 172.17.42.1
+
+  Graph this data and manage this system at:
+    https://landscape.canonical.com/
+
+Last login: Tue Feb 17 03:47:41 2015 from 62-135-247-12-dynamic.dk.customer.tdc.net
+root@node01:~#
+```
+--
+## works like coreos _etcd_
+```
+$ docker run --rm swarm create
+Unable to find image 'swarm:latest' locally
+a8bbe4db330c: Pull complete
+9dfb95669acc: Pull complete
+0b3950daf974: Pull complete
+633f3d9a9685: Pull complete
+bba5f98a0414: Pull complete
+defbc1ab4462: Pull complete
+92d78d321ff2: Pull complete
+511136ea3c5a: Already exists
+swarm:latest: The image you are pulling has been verified. Important: image verification is a tech preview feature and should not be relied on to provide security.
+Status: Downloaded newer image for swarm:latest
+1759275a913132d137a80afd6a929836
+```
+--
+```
+docker run -d swarm join --addr=104.131.178.98:2375 token://1759275a913132d137a80afd6a929836
+
+docker run -t -p 104.131.6.53::2375 swarm manage token://1759275a913132d137a80afd6a929836
+```
+```
+docker -H tcp://<swarm_ip:swarm_port> info
+```
+--
+```
+$ docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED                  STATUS              PORTS                           NODE        NAMES
+92d78d321ff2        mynginx:latest      "nginx"             Less than a second ago   running             104.131.178.98:49178->80/tcp    node-01     mynginx
+```
+--
+## rough edges
+- takes time
+- docker listening on network
+- loadbalacing
+--
+# deis.io
+## your own paas
+--
+## $ brew install deisctl
+--
+## coreos
+* has cloudinit/userdata for all providers
+
+```
+$ gem install docl
+$ docl authorize
+$ docl upload_key deis ~/.ssh/deis.pub
+$ # retrieve your SSH key's ID
+$ docl keys
+deis (id: 690051)
+$ # retrieve the region name
+$ docl regions --metadata --private-networking
+Amsterdam 2 (ams2)
+Amsterdam 3 (ams3)
+London 1 (lon1)
+New York 3 (nyc3)
+Singapore 1 (sgp1)
+$ ./contrib/digitalocean/provision-do-cluster.sh ams2 690051 4GB
+```
+--
+## $ deisctl install platform
+--
+## install _deis_ terminal
+## curl -sSL http://deis.io/deis-cli/install.sh | sh
+--
+## deis register http://my-coreos-cluster.com
+--
+## mimicking heroku functionality and cli
+
+## $ deis apps:create
+## $ deis apps:list
+## $ git push deis master
+--
+```
+$ git push deis master
+Counting objects: 13, done.
+Delta compression using up to 8 threads.
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (13/13), 1.99 KiB | 0 bytes/s, done.
+Total 13 (delta 2), reused 0 (delta 0)
+-----> Building Docker image
+
+```
+--
+```
+asd
+```

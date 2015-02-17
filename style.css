@@ -24,3 +24,7 @@ section h2:first-child {
 pre {
     font-size: 100%;
 }
+
+li {
+    font-size: 130%;
+}
